@@ -75,3 +75,8 @@ isPossibleMove(Coordenada, Tabuleiro, Turno) :- north(Direcao), canMove(Coordena
 isPossibleMove(Coordenada, Tabuleiro, Turno) :- south(Direcao), canMove(Coordenada, Direcao, Tabuleiro, Turno).
 isPossibleMove(Coordenada, Tabuleiro, Turno) :- west(Direcao), canMove(Coordenada, Direcao, Tabuleiro, Turno).
 isPossibleMove(Coordenada, Tabuleiro, Turno) :- east(Direcao), canMove(Coordenada, Direcao, Tabuleiro, Turno).
+
+%obtém a lista dos possíveis movimentos
+getPossibleMovements(Turno, Tabuleiro) :- size(Tabuleiro, X),
+										Y is X - 1,
+									getPossibleMovementsOnLines(Tabuleiro, Turno, Y, Y).
