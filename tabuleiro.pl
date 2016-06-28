@@ -18,4 +18,30 @@ max_marechal(X) :- X is 1.
 size(M, R) :- getNumberOfLines(M, R).
 
 %retorna boolean se a coordenada está entre o tamanho do tabuleiro
-isCoordenadaValida([X, Y], [H | T]) :- X > 0, size([H | T], S), X < S.
+isCoordenadaValida([X | Y], Tabuleiro) :- X >= 0, size(Tabuleiro, S), X < S, Y >= 0, Y < S.
+
+%get max dado elemento
+getNumeroMaxElemento(Elemento, Numero) :- bandeira(X), X==Elemento, max_bandeira(Numero), !.
+getNumeroMaxElemento(Elemento, Numero) :- bomba(X), X==Elemento, max_bomba(Numero), !.
+getNumeroMaxElemento(Elemento, Numero) :- espiao(X), X==Elemento, max_espiao(Numero), !.
+getNumeroMaxElemento(Elemento, Numero) :- soldado(X), X==Elemento, max_soldado(Numero), !.
+getNumeroMaxElemento(Elemento, Numero) :- cabo(X), X==Elemento, max_cabo(Numero), !.
+getNumeroMaxElemento(Elemento, Numero) :- sargento(X), X==Elemento, max_sargento(Numero), !.
+getNumeroMaxElemento(Elemento, Numero) :- tenente(X), X==Elemento, max_tenente(Numero), !.
+getNumeroMaxElemento(Elemento, Numero) :- capitao(X), X==Elemento, max_capitao(Numero), !.
+getNumeroMaxElemento(Elemento, Numero) :- major(X), X==Elemento, max_major(Numero), !.
+getNumeroMaxElemento(Elemento, Numero) :- coronel(X), X==Elemento, max_coronel(Numero), !.
+getNumeroMaxElemento(Elemento, Numero) :- general(X), X==Elemento, max_general(Numero), !.
+getNumeroMaxElemento(Elemento, Numero) :- marechal(X), X==Elemento, max_marechal(Numero), !.
+
+%imprime uma peça
+printPiece(Piece, Turno, Resultado) :- isMyPiece(Piece, Turno), toString(Piece, S), Resultado = S + " ".
+printPiece(Piece, Turno, "XXX ") :- not(isMyPiece(Piece, Turno)).
+printPiece(Piece, Turno, Resultado) :- territorio(X), Piece == X,toString(X, S), Resultado = S + " ".
+
+%imprime uma linha
+printLine([H | S], Turno, Resultado) :- printPiece(H, Turno, R), length(S,T),T > 0,printLine(S, Turno, R1), Resultado = R + R1.
+
+%imprime o tabuleiro
+printTabuleiro([H | S], Turno, Resultado) :- Resultado is [H].
+
