@@ -80,3 +80,7 @@ isPossibleMove(Coordenada, Tabuleiro, Turno) :- east(Direcao), canMove(Coordenad
 getPossibleMovements(Turno, Tabuleiro) :- size(Tabuleiro, X),
 										Y is X - 1,
 									getPossibleMovementsOnLines(Tabuleiro, Turno, Y, Y).
+
+
+getQuantidadeElementos
+setPiece
