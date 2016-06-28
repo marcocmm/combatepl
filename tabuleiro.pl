@@ -47,7 +47,10 @@ printTabuleiro([H | S], Turno, Resultado) :- Resultado is [H].
 
 %define função que move uma peça do tabuleiro.
 %retorna o novo tabuleiro
-
 move(Coordenada, Direcao, Tabuleiro, Turno, Resultado) :- canMove(Coordenada, Direcao, Tabuleiro, Turno),
 												getMoveCoordenada(Coordenada, Direcao, AttackCoordinate),
 												atacar(Coordenada, AttackCoordinate, Tabuleiro, Resultado).
+
+%calcula a jogada do computador
+heuristica(Turno, Tabuleiro, Resultado) :- getPossibleMovements(Turno, Tabuleiro, PossibleMovements),
+										getMelhorPeca(Tabuleiro, PossibleMovements, [0, 0], 0).
