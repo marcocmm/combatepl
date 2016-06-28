@@ -114,3 +114,38 @@ atacar(CoordenadaA, CoordenadaD, Tabuleiro, Ntabuleiro) :-
 
 %%%altera a peça de uma coordenada
 setPiece(P, [X,Y|_], Tabuleiro,Rtabuleiro) :- setElementoMatriz(Tabuleiro, X, Y, P, Rtabuleiro).
+
+
+%insere aleatoriamente o exercito no tabuleiro
+popularTabuleiro(I, J, Tabuleiro) :- random_between(0, 12, X).
+
+(define (popularTabuleiro i j tabuleiro)
+  (define r (+(random 12)1))
+  (cond
+    [
+     (eq? i -1) 
+     tabuleiro
+     ]
+    [
+     (eq? i 5)
+     (popularTabuleiro 3 9  tabuleiro)
+     ]
+    [
+     (and (and (< (getQuantidadeElementos tabuleiro (getEnemyPiece r)) (getNumeroMaxElemento r)) (eq? j 0))(< i 4))
+     (popularTabuleiro (- i 1) 9 (setPiece (getEnemyPiece r) (getCoordenada i j) tabuleiro))
+     ]
+    [
+     (and (< (getQuantidadeElementos tabuleiro (getEnemyPiece r)) (getNumeroMaxElemento r))(< i 4))
+     (popularTabuleiro i (- j 1) (setPiece (getEnemyPiece r) (getCoordenada i j) tabuleiro))
+     ]
+    [
+     (and (< (getQuantidadeElementos tabuleiro r) (getNumeroMaxElemento r)) (eq? j 0))
+     (popularTabuleiro (- i 1) 9 (setPiece r (getCoordenada i j) tabuleiro))
+     ]
+    [
+     (< (getQuantidadeElementos tabuleiro r) (getNumeroMaxElemento r))
+     (popularTabuleiro i (- j 1) (setPiece r (getCoordenada i j) tabuleiro))
+     ]
+    (else (popularTabuleiro i j tabuleiro))
+    )
+  )
