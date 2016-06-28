@@ -61,14 +61,15 @@ haveWinner(Tabuleiro) :- bandeira(B), getEnemyPiece(B,Bi), getQuantidadeElemento
 
 
 %%retorna boolean se é possível mover a peça para o direção dada
-canMove(Coordenada, Direcao, Tabuleiro, Turno) :- isCoordenadaValida(Coordenada, Tabuleiro), isDirecaoValida(Direcao),
-					getPiece(Coordenada, Tabuleiro, P), bandeira(Ba), bomba(Bo), territorio(T),
-					not(isPieceEquals(P,Ba)), not(isPieceEquals(P,Bo)), not(isPieceEquals(P,T)),
-					isMyPiece(P,Turno),
-					getMoveCoordenada(Coordenada, Direcao, Nc), isCoordenadaValida(Nc,Tabuleiro).
+canMove(Coordenada, Direcao, Tabuleiro, Turno) :- isCoordenadaValida(Coordenada, Tabuleiro),
+				isDirecaoValida(Direcao),
+				getPiece(Coordenada, Tabuleiro, P), bandeira(Ba), bomba(Bo), territorio(T),
+				not(isPieceEquals(P,Ba)), not(isPieceEquals(P,Bo)), not(isPieceEquals(P,T)),
+				isMyPiece(P,Turno),
+				getMoveCoordenada(Coordenada, Direcao, Nc), isCoordenadaValida(Nc,Tabuleiro).
 					
 %%%%obtém a peça de uma coordenada
-getPiece([H|T], Tabuleiro, E) :- getElementoMatriz(Tabuleiro, H, T, E).
+getPiece([H,T], Tabuleiro, E) :- getElementoMatriz(Tabuleiro, H, T, E).
 
 %verifica se é possível mover uma coordenada em alguma direção
 isPossibleMove(Coordenada, Tabuleiro, Turno) :- north(Direcao), canMove(Coordenada, Direcao, Tabuleiro, Turno).
@@ -80,3 +81,21 @@ isPossibleMove(Coordenada, Tabuleiro, Turno) :- east(Direcao), canMove(Coordenad
 getPossibleMovements(Turno, Tabuleiro) :- size(Tabuleiro, X),
 										Y is X - 1,
 									getPossibleMovementsOnLines(Tabuleiro, Turno, Y, Y).
+
+
+%%%faz o ataque
+atacar(CoordenadaA, CoordenadaD, Tabuleiro, Ntabuleiro) :- 
+		getPiece(CoordenadaA, Tabuleiro, Pa), getPiece(CoordenadaD, Tabuleiro, Pd), wonInvestida(Pa,Pd),
+		bomba(B), isPieceEquals(B,Pa), territorio(T), setPiece(T, CoordenadaA, Tabuleiro, Tabuleiro1), 
+		setPiece(T, CoordenadaD, Tabuleiro1, Ntabuleiro), !.
+atacar(CoordenadaA, CoordenadaD, Tabuleiro, Ntabuleiro) :- 
+		getPiece(CoordenadaA, Tabuleiro, Pa), getPiece(CoordenadaD, Tabuleiro, Pd), wonInvestida(Pa,Pd),
+		territorio(T), setPiece(T, CoordenadaA, Tabuleiro, Tabuleiro1), 
+		setPiece(Pa, CoordenadaD, Tabuleiro1, Ntabuleiro), !.
+atacar(CoordenadaA, CoordenadaD, Tabuleiro, Ntabuleiro) :- 
+		getPiece(CoordenadaA, Tabuleiro, Pa), getPiece(CoordenadaD, Tabuleiro, Pd), not(wonInvestida(Pa,Pd)),
+		territorio(T), setPiece(T, CoordenadaA, Tabuleiro, Ntabuleiro), !.
+
+
+%%%altera a peça de uma coordenada
+setPiece(P, [X,Y|_], Tabuleiro,Rtabuleiro) :- setElementoMatriz(Tabuleiro, X, Y, P, Rtabuleiro).
