@@ -1,7 +1,6 @@
 
 %%define as coordenadas%%
-getCoordenada(X,Y,[]) :- X == -2.
-getCoordenada(X,Y,[X,Y|Rest]) :- getCoordenada(-2,-2,Rest).  
+getCoordenada(X,Y,[X,Y]).  
 
 
 %%obtém coordenada para onde a peça irá%%
