@@ -69,3 +69,9 @@ canMove(Coordenada, Direcao, Tabuleiro, Turno) :- isCoordenadaValida(Coordenada,
 					
 %%%%obtém a peça de uma coordenada
 getPiece([H|T], Tabuleiro, E) :- getElementoMatriz(Tabuleiro, H, T, E).
+
+%verifica se é possível mover uma coordenada em alguma direção
+isPossibleMove(Coordenada, Tabuleiro, Turno) :- north(Direcao), canMove(Coordenada, Direcao, Tabuleiro, Turno).
+isPossibleMove(Coordenada, Tabuleiro, Turno) :- south(Direcao), canMove(Coordenada, Direcao, Tabuleiro, Turno).
+isPossibleMove(Coordenada, Tabuleiro, Turno) :- west(Direcao), canMove(Coordenada, Direcao, Tabuleiro, Turno).
+isPossibleMove(Coordenada, Tabuleiro, Turno) :- east(Direcao), canMove(Coordenada, Direcao, Tabuleiro, Turno).
