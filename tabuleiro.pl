@@ -35,6 +35,21 @@ getNumeroMaxElemento(Elemento, Numero) :- coronel(X), X==Elemento, max_coronel(N
 getNumeroMaxElemento(Elemento, Numero) :- general(X), X==Elemento, max_general(Numero), !.
 getNumeroMaxElemento(Elemento, Numero) :- marechal(X), X==Elemento, max_marechal(Numero), !.
 
+printLine([], Turno, _, _) :- nl.
+printLine([H|T], Turno, R, C) :- 
+  (isMyPiece(H,Turno) -> toString(H, X), write(X); write("XXX")),
+  write(" "),
+  Counter is C + 1, 
+  printLine(T, Turno, R, Counter).
+
+printAllLines([], Turno, _).
+printAllLines([H|T], Turno, R) :- 
+  printLine(H, Turno, R, 0), 
+  Counter is R + 1, 
+  printAllLines(T, Turno, Counter).
+
+printTabuleiro(M, Turno) :- printAllLines(M, Turno, 0).
+
 %imprime uma peça
 printPiece(Piece, Turno, Resultado) :- isMyPiece(Piece, Turno), toString(Piece, S), Resultado = S + " ".
 printPiece(Piece, Turno, "XXX ") :- not(isMyPiece(Piece, Turno)).
