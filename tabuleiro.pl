@@ -35,16 +35,20 @@ getNumeroMaxElemento(Elemento, Numero) :- coronel(X), X==Elemento, max_coronel(N
 getNumeroMaxElemento(Elemento, Numero) :- general(X), X==Elemento, max_general(Numero), !.
 getNumeroMaxElemento(Elemento, Numero) :- marechal(X), X==Elemento, max_marechal(Numero), !.
 
-%imprime uma peça
-printPiece(Piece, Turno, Resultado) :- isMyPiece(Piece, Turno), toString(Piece, S), Resultado = S + " ".
-printPiece(Piece, Turno, "XXX ") :- not(isMyPiece(Piece, Turno)).
-printPiece(Piece, Turno, Resultado) :- territorio(X), Piece == X,toString(X, S), Resultado = S + " ".
+printLine([], Turno, _, _) :- nl.
+printLine([H|T], Turno, R, C) :- territorio(Ter), normalizePiece(H,P),
+  (isMyPiece(H,Turno) -> toString(P, X), write(X); (Ter == P -> write("   ");write("XXX"))),
+  write(" "),
+  Counter is C + 1,
+  printLine(T, Turno, R, Counter).
 
-%imprime uma linha
-printLine([H | S], Turno, Resultado) :- printPiece(H, Turno, R), length(S,T),T > 0,printLine(S, Turno, R1), Resultado = R + R1.
+printAllLines([], Turno, _).
+printAllLines([H|T], Turno, R) :-
+  printLine(H, Turno, R, 0),
+  Counter is R + 1,
+  printAllLines(T, Turno, Counter).
 
-%imprime o tabuleiro
-printTabuleiro([H | S], Turno, Resultado) :- Resultado is [H].
+printTabuleiro(M, Turno) :- printAllLines(M, Turno, 0).
 
 %define função que move uma peça do tabuleiro.
 %retorna o novo tabuleiro
