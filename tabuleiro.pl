@@ -35,21 +35,6 @@ getNumeroMaxElemento(Elemento, Numero) :- coronel(X), X==Elemento, max_coronel(N
 getNumeroMaxElemento(Elemento, Numero) :- general(X), X==Elemento, max_general(Numero), !.
 getNumeroMaxElemento(Elemento, Numero) :- marechal(X), X==Elemento, max_marechal(Numero), !.
 
-printLine([], Turno, _, _) :- nl.
-printLine([H|T], Turno, R, C) :- 
-  (isMyPiece(H,Turno) -> toString(H, X), write(X); write("XXX")),
-  write(" "),
-  Counter is C + 1, 
-  printLine(T, Turno, R, Counter).
-
-printAllLines([], Turno, _).
-printAllLines([H|T], Turno, R) :- 
-  printLine(H, Turno, R, 0), 
-  Counter is R + 1, 
-  printAllLines(T, Turno, Counter).
-
-printTabuleiro(M, Turno) :- printAllLines(M, Turno, 0).
-
 %imprime uma peça
 printPiece(Piece, Turno, Resultado) :- isMyPiece(Piece, Turno), toString(Piece, S), Resultado = S + " ".
 printPiece(Piece, Turno, "XXX ") :- not(isMyPiece(Piece, Turno)).
@@ -72,7 +57,7 @@ heuristica(Turno, Tabuleiro, Resultado) :- getPossibleMovements(Turno, Tabuleiro
 										getMelhorPeca(Tabuleiro, PossibleMovements, [0, 0], 0).
 
 %%%retorna boolean se há vencedor
-haveWinner(Tabuleiro) :- bandeira(B), getEnemyPiece(B,Bi), getQuantidadeElementosMatriz(B,Tabuleiro,Nb), getQuantidadeElementosMatriz(Bi,Tabuleiro,Nbi),T is Nb + Nbi, not(T == 2).
+haveWinner(Tabuleiro) :- bandeira(B), getEnemyPiece(B,Bi), getQuantidadeElementos(Tabuleiro,B,Nb), getQuantidadeElementosMatriz(Bi,Tabuleiro,Nbi),T is Nb + Nbi, not(T == 2).
 
 
 %%retorna boolean se é possível mover a peça para o direção dada
@@ -116,10 +101,19 @@ atacar(CoordenadaA, CoordenadaD, Tabuleiro, Ntabuleiro) :-
 setPiece(P, [X,Y|_], Tabuleiro,Rtabuleiro) :- setElementoMatriz(Tabuleiro, X, Y, P, Rtabuleiro).
 
 
-<<<<<<< HEAD
 
 %%%%obtém o número de vezes que o elemento aparece no tabuleiro
 getQuantidadeElementos(Tabuleiro, E, Q) :- getQuantidadeElementosMatriz(E, Tabuleiro, Q).
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -146,38 +140,23 @@ getPossibleMovementsOnLines(Tabuleiro, Turno, X, Y, R) :-
 	X1 is X-1, getPossibleMovementsOnLines(Tabuleiro, Turno, X1, Y, Rn), R is [Coordenada|Rn], !.
 getPossibleMovementsOnLines(Tabuleiro, Turno, X, Y, R) :-
 	X1 is X - 1, getPossibleMovementsOnLines(Tabuleiro, Turno, X1, Y, R), !.
-=======
-%insere aleatoriamente o exercito no tabuleiro
-popularTabuleiro(I, J, Tabuleiro) :- random_between(0, 12, X).
 
-(define (popularTabuleiro i j tabuleiro)
-  (define r (+(random 12)1))
-  (cond
-    [
-     (eq? i -1) 
-     tabuleiro
-     ]
-    [
-     (eq? i 5)
-     (popularTabuleiro 3 9  tabuleiro)
-     ]
-    [
-     (and (and (< (getQuantidadeElementos tabuleiro (getEnemyPiece r)) (getNumeroMaxElemento r)) (eq? j 0))(< i 4))
-     (popularTabuleiro (- i 1) 9 (setPiece (getEnemyPiece r) (getCoordenada i j) tabuleiro))
-     ]
-    [
-     (and (< (getQuantidadeElementos tabuleiro (getEnemyPiece r)) (getNumeroMaxElemento r))(< i 4))
-     (popularTabuleiro i (- j 1) (setPiece (getEnemyPiece r) (getCoordenada i j) tabuleiro))
-     ]
-    [
-     (and (< (getQuantidadeElementos tabuleiro r) (getNumeroMaxElemento r)) (eq? j 0))
-     (popularTabuleiro (- i 1) 9 (setPiece r (getCoordenada i j) tabuleiro))
-     ]
-    [
-     (< (getQuantidadeElementos tabuleiro r) (getNumeroMaxElemento r))
-     (popularTabuleiro i (- j 1) (setPiece r (getCoordenada i j) tabuleiro))
-     ]
-    (else (popularTabuleiro i j tabuleiro))
-    )
-  )
->>>>>>> f3ab75a7c0e967f27d99144e1baf3d3528a0d2af
+
+concatenar([], L, L).
+concatenar([H|T], L, [H|D]) :- concatenar(T, L, D).
+
+matrizZero(L) :- concatenar([],[[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0]],L).
+
+
+
+%%%insere aleatoriamente o exercito no tabuleiro
+popularTabuleiro(Tabuleiro, I, J, Tabuleiro) :- I == -1, !.
+popularTabuleiro(Tabuleiro, I, J, Nt) :- I == 5, popularTabuleiro(Tabuleiro, 3, 9, Nt), !.
+popularTabuleiro(Tabuleiro, I, J, Nt) :- J == -1, I1 is I - 1, popularTabuleiro(Tabuleiro, I1, 9, Nt), !.
+popularTabuleiro(Tabuleiro, I, J, Nt) :- I >= 0, I =< 3, random_between(0,12,R), getEnemyPiece(R,Ri), getNumeroMaxElemento(R,Qrt), getQuantidadeElementos(Tabuleiro, Ri, Qrd),
+		Qrd < Qrt, getCoordenada(I,J,Coordenada), setPiece(Ri, Coordenada, Tabuleiro, Nti),
+		J1 is J - 1, popularTabuleiro(Nti, I, J1, Nt), !.
+popularTabuleiro(Tabuleiro, I, J, Nt) :- I >= 6, I =< 9, random_between(0,12,R), getNumeroMaxElemento(R,Qrt), getQuantidadeElementos(Tabuleiro, R, Qrd),
+		Qrd < Qrt, getCoordenada(I,J,Coordenada), setPiece(R, Coordenada, Tabuleiro, Nti),
+		J1 is J - 1, popularTabuleiro(Nti, I, J1, Nt), !.
+popularTabuleiro(Tabuleiro, I, J, Nt) :- popularTabuleiro(Tabuleiro, I, J, Nt), !.
