@@ -99,3 +99,34 @@ atacar(CoordenadaA, CoordenadaD, Tabuleiro, Ntabuleiro) :-
 
 %%%altera a peça de uma coordenada
 setPiece(P, [X,Y|_], Tabuleiro,Rtabuleiro) :- setElementoMatriz(Tabuleiro, X, Y, P, Rtabuleiro).
+
+
+
+%%%%obtém o número de vezes que o elemento aparece no tabuleiro
+getQuantidadeElementos(Tabuleiro, E, Q) :- getQuantidadeElementosMatriz(E, Tabuleiro, Q).
+
+
+
+%%%verifica se é possível mover uma coordenada para sul
+isPossibleMoveSouth(Coordenada, Tabuleiro, Turno) :-
+		(south(S), canMove(Coordenada, S, Tabuleiro, Turno));
+		(west(W), canMove(Coordenada, W, Tabuleiro, Turno), 
+		getMoveCoordenada(Coordenada, W, Cw),
+		getPiece(Cw, Tabuleiro, Pw), Pw > 0,
+		getPiece(Cw, Tabuleiro, Pw), Pw =< 10);
+		(east(E), canMove(Coordenada, E, Tabuleiro, Turno), 
+		getMoveCoordenada(Coordenada, E, Ce),
+		getPiece(Ce, Tabuleiro, Pe), Pe > 0,
+		getPiece(Ce, Tabuleiro, Pe), Pe =< 10).
+
+%%%calcula possíveis movimentos no tabuleiro
+getPossibleMovementsOnLines(Tabuleiro, Turno, X, Y, []) :-
+	Y == -1, !.
+getPossibleMovementsOnLines(Tabuleiro, Turno, X, Y, R) :-
+	X == -1, Y1 is Y -1, size(Tabuleiro, S), X1 is S - 1, 
+	getPossibleMovementsOnLines(Tabuleiro, Turno, X1, Y1, R), !.
+getPossibleMovementsOnLines(Tabuleiro, Turno, X, Y, R) :-
+	getCoordenada(X,Y,Coordenada), isPossibleMoveSouth(Coordenada, Tabuleiro, Turno),
+	X1 is X-1, getPossibleMovementsOnLines(Tabuleiro, Turno, X1, Y, Rn), R is [Coordenada|Rn], !.
+getPossibleMovementsOnLines(Tabuleiro, Turno, X, Y, R) :-
+	X1 is X - 1, getPossibleMovementsOnLines(Tabuleiro, Turno, X1, Y, R), !.
